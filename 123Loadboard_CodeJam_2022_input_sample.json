@@ -1,0 +1,54 @@
+[
+	{
+      "input_trip_id": 201,
+      "start_latitude": 35.929790,
+      "start_longitude": -89.892014,
+      "start_time": "2022-02-28 00:00:00",
+      "max_destination_time": "2022-02-29 12:00:00"
+	},
+	{
+      "input_trip_id": 202,
+      "start_latitude": 28.570303,
+      "start_longitude": -81.380015,
+      "start_time": "2022-02-28 00:00:00",
+      "max_destination_time": "2022-02-29 15:00:00"
+	},
+	{
+      "input_trip_id": 203,
+      "start_latitude": 45.507460,
+      "start_longitude": -89.892014,
+      "start_time": "2022-02-29 10:00:00",
+      "max_destination_time": "2022-02-30 12:00:00"
+	},
+	{
+      "input_trip_id": 204,
+      "start_latitude": 29.815514,
+      "start_longitude": -95.464486,
+      "start_time": "2022-02-28 15:15:00",
+      "max_destination_time": "2022-02-30 12:00:00"
+	},
+	{
+      "input_trip_id": 205,
+      "start_latitude": 29.756205,
+      "start_longitude": -94.934204,
+      "start_time": "2022-02-30 12:00:00",
+      "max_destination_time": "2022-03-02 10:00:00"
+	},
+	{
+      "input_trip_id": 206,
+      "start_latitude": 30.324290,
+      "start_longitude": -81.769414,
+      "start_time": "2022-02-29 05:00:00",
+      "max_destination_time": "2022-03-06 00:00:00"
+	},
+	{
+      "input_trip_id": 207,
+      "start_latitude": 39.953785,
+      "start_longitude": -82.972543,
+      "start_time": "2022-03-02 22:00:00",
+      "max_destination_time": "2022-03-04 15:00:00"
+	}
+]
+
+
+
