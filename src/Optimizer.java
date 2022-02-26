@@ -23,7 +23,7 @@ public class Optimizer {
         return d / 1609.34; // in miles
     }
 
-    static double findDifference(String start_date, String end_date) {
+    static double findTimeDiff(String start_date, String end_date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date d1 = sdf.parse(start_date);
@@ -69,17 +69,22 @@ public class Optimizer {
             double destLat = (double) trip.get("destination_latitude");
             double destLon = (double) trip.get("destination_longitude");
             String pickupTime = (String) trip.get("pickup_date_time");
+            pickupTime = pickupTime.substring(0,10) + " " + pickupTime.substring(11,19);    // fixes weird time format in JSON
             long amount = (long) trip.get("amount");
 
             // Consider only loads in nearby area
             if (Math.abs(orgLat-startLat) < 2 && Math.abs(orgLon-startLon) < 2) {
+                // Consider only profitable loads
                 double deadDist = calc_distance(startLat, startLon, orgLat, orgLon);
                 double loadDist = calc_distance(orgLat, orgLon, destLat, destLon);
                 double profit = amount - loadDist*fuelCost - deadDist*fuelCost;
-                // Consider only profitable loads
                 if (profit > 0) {
-                    possibleLoads.add(o);   // add to list of possible loads
-                    System.out.println("ID: "+id+"\tProfit: $" + profit);
+                    // Check if truck can make pickup time
+                    double timeDiff = findTimeDiff(startTime, pickupTime);
+                    if (timeDiff >= deadDist*speed) {
+                        possibleLoads.add(o);   // add to list of possible loads
+                        System.out.println("ID: "+id+"\tProfit: $" + profit);
+                    }
                 }
             }
         }
