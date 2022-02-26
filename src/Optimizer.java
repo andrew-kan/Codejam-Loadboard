@@ -1,6 +1,7 @@
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.simple.JSONArray;
@@ -58,6 +59,7 @@ public class Optimizer {
 
         JSONParser parser = new JSONParser();
         JSONArray a = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_dataset.json"));
+        ArrayList<Object> possibleLoads = new ArrayList<>();
         for (Object o : a) {
             JSONObject trip = (JSONObject) o;
             long id = (long) trip.get("load_id");
@@ -71,8 +73,9 @@ public class Optimizer {
                 double deadDist = calc_distance(startLat, startLon, orgLat, orgLon);
                 double loadDist = calc_distance(orgLat, orgLon, destLat, destLon);
                 double profit = amount - loadDist*fuelCost - deadDist*fuelCost;
-
                 if (profit > 0) {
+
+
                     System.out.println("ID: "+id+"\tProfit: $" + profit);
                 }
             }
