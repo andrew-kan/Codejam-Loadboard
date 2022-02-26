@@ -2,6 +2,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -36,31 +37,7 @@ public class Optimizer {
     }
 
 
-
-    JSONParser jsonParser = new JSONParser();
-
-        try (
-    FileReader reader = new FileReader("employees.json"))
-    {
-        //Read JSON file
-        Object obj = jsonParser.parse(reader);
-
-        JSONArray employeeList = (JSONArray) obj;
-        System.out.println(employeeList);
-
-        //Iterate over employee array
-        employeeList.forEach( emp -> parseEmployeeObject( (JSONObject) emp ) );
-
-    } catch (FileNotFoundException e) {
-        e.printStackTrace();
-    } catch (IOException e) {
-        e.printStackTrace();
-    } catch (ParseException e) {
-        e.printStackTrace();
-    }
-
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, org.json.simple.parser.ParseException {
         double speed = 55.0; // MPH
         double fuelCost = 0.40; // $/mile
 
@@ -68,7 +45,7 @@ public class Optimizer {
         double startLon = -82.4493;
         String startTime = "2022-02-04 08:00:00";
         String endTime = "2022-02-06 15:00:00";
-        System.out.println(findDifference(startTime, endTime));
+        //System.out.println(findDifference(startTime, endTime));
         // speed*distance < findDifference time
 
         // for trips in file
@@ -79,8 +56,28 @@ public class Optimizer {
         // change time
         // repeat
 
-        //double d = calc_distance(startLat, startLon, startLat+2, startLon+2);
-        //System.out.println(d*speed*fuelCost);
+        JSONParser parser = new JSONParser();
+        JSONArray a = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_dataset.json"));
+        for (Object o : a) {
+            JSONObject trip = (JSONObject) o;
+            long id = (long) trip.get("load_id");
+            double orgLat = (double) trip.get("origin_latitude");
+            double orgLon = (double) trip.get("origin_longitude");
+            double destLat = (double) trip.get("destination_latitude");
+            double destLon = (double) trip.get("destination_longitude");
+            String pickupTime = (String) trip.get("pickup_date_time");
+            long amount = (long) trip.get("amount");
+            if (Math.abs(orgLat-startLat) < 2 && Math.abs(orgLon-startLon) < 2) {
+                double deadDist = calc_distance(startLat, startLon, orgLat, orgLon);
+                double loadDist = calc_distance(orgLat, orgLon, destLat, destLon);
+                double profit = amount - loadDist*fuelCost - deadDist*fuelCost;
+
+                if (profit > 0) {
+                    System.out.println("ID: "+id+"\tProfit: $" + profit);
+                }
+            }
+        }
+
     }
 
 
