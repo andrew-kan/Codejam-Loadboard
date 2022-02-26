@@ -57,10 +57,11 @@ public class Optimizer {
         // change time
         // repeat
 
+        // Parse load data file
         JSONParser parser = new JSONParser();
         JSONArray a = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_dataset.json"));
         ArrayList<Object> possibleLoads = new ArrayList<>();
-        for (Object o : a) {
+        for (Object o : a) {        // for each available load, get its data
             JSONObject trip = (JSONObject) o;
             long id = (long) trip.get("load_id");
             double orgLat = (double) trip.get("origin_latitude");
@@ -69,13 +70,15 @@ public class Optimizer {
             double destLon = (double) trip.get("destination_longitude");
             String pickupTime = (String) trip.get("pickup_date_time");
             long amount = (long) trip.get("amount");
+
+            // Consider only loads in nearby area
             if (Math.abs(orgLat-startLat) < 2 && Math.abs(orgLon-startLon) < 2) {
                 double deadDist = calc_distance(startLat, startLon, orgLat, orgLon);
                 double loadDist = calc_distance(orgLat, orgLon, destLat, destLon);
                 double profit = amount - loadDist*fuelCost - deadDist*fuelCost;
+                // Consider only profitable loads
                 if (profit > 0) {
-
-
+                    possibleLoads.add(o);   // add to list of possible loads
                     System.out.println("ID: "+id+"\tProfit: $" + profit);
                 }
             }
