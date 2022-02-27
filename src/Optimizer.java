@@ -202,7 +202,7 @@ public class Optimizer {
         }
 
         // Write JSON file
-        try (FileWriter file = new FileWriter("output_300.json")) {
+        try (FileWriter file = new FileWriter("output_s300.json")) {
             file.write(tripList.toJSONString());
             file.flush();
             System.out.println("Trip optimization successful.");
