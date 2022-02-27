@@ -142,6 +142,7 @@ public class Optimizer {
                     maxProf = l;
                 }
             }
+            //System.out.println(maxProf);
             routing.add(maxProf);   // add max profit load to routing
             getOptimalRoute(routing, maxProf.getDestLat(), maxProf.getDestLon(), maxProf.getEndTime(), maxTime);    // keep adding loads to routing if possible
         }
@@ -187,19 +188,19 @@ public class Optimizer {
      */
     public static void main(String[] args) throws IOException, org.json.simple.parser.ParseException, ParseException {
         JSONParser parser = new JSONParser();
-        JSONArray in = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_input_sample_s300.json"));
+        JSONArray in = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_input_final_s400.json"));
         loads = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_dataset.json"));
         JSONArray tripList = new JSONArray();
 
         // For each input driver, create routing
-        for (Object o : in) {
-            JSONObject driver = (JSONObject) o;
+        for(int i=0; i<9; i++) { //(Object o : in) {
+            JSONObject driver = (JSONObject) in.get(i);//o;
             JSONObject trip = createRouting(driver);
             tripList.add(trip);
         }
 
         // Write JSON file
-        try (FileWriter file = new FileWriter("output_s300.json")) {
+        try (FileWriter file = new FileWriter("output_s400.json")) {
             file.write(tripList.toJSONString());
             file.flush();
             System.out.println("Trip optimization successful.");
