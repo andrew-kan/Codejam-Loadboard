@@ -13,7 +13,7 @@ import org.json.simple.parser.JSONParser;
 /**
  * Solves challenge by 123Loadboard. Made for Code.Jam 2022.
  * Generates an optimal truck route based on available loads and profit, factoring deadhead and fuel.
- * @Author Andrew Kan
+ * @author Andrew Kan
  */
 public class Optimizer {
     private static final double speed = 55.0; // MPH
@@ -30,12 +30,12 @@ public class Optimizer {
      */
     public static double calc_distance(double lat1, double lon1, double lat2, double lon2) {
         double R = 6371000; // metres
-        double φ1 = lat1 * Math.PI/180; // φ, λ in radians
-        double φ2 = lat2 * Math.PI/180;
-        double Δφ = (lat2-lat1) * Math.PI/180;
-        double Δλ = (lon2-lon1) * Math.PI/180;
-        double a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2);
+        double p1 = lat1 * Math.PI/180; // p, l in radians
+        double p2 = lat2 * Math.PI/180;
+        double dP = (lat2-lat1) * Math.PI/180;
+        double dL = (lon2-lon1) * Math.PI/180;
+        double a = Math.sin(dP/2) * Math.sin(dP/2) +
+                Math.cos(p1) * Math.cos(p2) * Math.sin(dL/2) * Math.sin(dL/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double d = R * c; // in metres
         return d / 1609.34; // in miles
@@ -53,8 +53,7 @@ public class Optimizer {
             Date d1 = sdf.parse(start_date);
             Date d2 = sdf.parse(end_date);
             long difference_In_Time = d2.getTime() - d1.getTime();  // in milliseconds
-            double diff = (difference_In_Time / (1000.0*60*60));
-            return diff;    // difference in hours
+            return (difference_In_Time / (1000.0*60*60));    // difference in hours
         } catch (ParseException e) {
             e.printStackTrace();
             return 0;
@@ -75,8 +74,7 @@ public class Optimizer {
         cal.setTime(d);
         cal.add(Calendar.HOUR, (int) hours);
         cal.add(Calendar.MINUTE, (int) Math.ceil((hours-(int)hours) * 60));
-        String newTime = sdf.format(cal.getTime());
-        return newTime;
+        return sdf.format(cal.getTime());   // formatted new time
     }
 
     /**
@@ -86,7 +84,6 @@ public class Optimizer {
      * @param startTime formatted string representing starting time at origin
      * @param maxTime formatted string for maximum destination time
      * @return ArrayList of possible loads
-     * @throws ParseException
      */
     public static ArrayList<Load> findLoads(double startLat, double startLon, String startTime, String maxTime) throws ParseException {
         // Parse data file of available loads
