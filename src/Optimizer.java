@@ -10,13 +10,25 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+/**
+ * Solves challenge by 123Loadboard. Made for Code.Jam 2022.
+ * Generates an optimal truck route based on available loads and profit, factoring deadhead and fuel.
+ * @Author Andrew Kan
+ */
 public class Optimizer {
     static double speed = 55.0; // MPH
     static double fuelCost = 0.40; // $/mile
     static JSONArray loads;
 
+
+
     /**
-     * Geodesic distance formula (Haversine formula). Adapted from Chris Veness.
+     * Geodesic distance formula between two world coordinates (Haversine formula). Adapted from Chris Veness.
+     * @param lat1 starting latitude
+     * @param lon1 starting longitude
+     * @param lat2 ending latitude
+     * @param lon2 ending longitude
+     * @return distance in miles (double)
      */
     public static double calc_distance(double lat1, double lon1, double lat2, double lon2) {
         double R = 6371000; // metres
@@ -31,6 +43,12 @@ public class Optimizer {
         return d / 1609.34; // in miles
     }
 
+    /**
+     * Returns difference in start and end times in hours
+     * @param start_date String in yyyy-MM-dd HH:mm:ss format
+     * @param end_date String in yyyy-MM-dd HH:mm:ss format
+     * @return time difference in hours (double)
+     */
     public static double findTimeDiff(String start_date, String end_date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
@@ -80,7 +98,7 @@ public class Optimizer {
                     // Check if truck can make pickup time and if time not too far away
                     double timeDiffPickup = findTimeDiff(startTime, pickupTime);
                     double timeDiffEnd = findTimeDiff(pickupTime, maxTime);
-                    if (timeDiffPickup >= deadDist/speed && timeDiffEnd >= loadDist/speed) {// && timeDiffPickup <= 12) {
+                    if (timeDiffPickup >= deadDist/speed && timeDiffEnd >= loadDist/speed && timeDiffPickup <= 12) {
                         String endTime = addTime(startTime, loadDist/speed);
                         Load l = new Load(o, id, profit, orgLat, orgLon, destLat, destLon, pickupTime, endTime);
                         possibleLoads.add(l);   // add to list of possible loads
@@ -91,7 +109,7 @@ public class Optimizer {
         return possibleLoads;
     }
 
-    public static void getOptimalRoute(LinkedList<Load> routing, double startLat, double startLon, String startTime, String maxTime) throws IOException, org.json.simple.parser.ParseException, ParseException {
+    public static void getOptimalRoute(LinkedList<Load> routing, double startLat, double startLon, String startTime, String maxTime) throws ParseException {
         //LinkedList<Load> routing = null;
         ArrayList<Load> loads = findLoads(startLat, startLon, startTime, maxTime);
         if (loads.size() > 0) {
@@ -112,9 +130,11 @@ public class Optimizer {
         JSONArray in = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_input_sample_s300.json"));
         loads = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_dataset.json"));
         JSONArray tripList = new JSONArray();
-        for (Object o : in) {        // for each input driver, get its data
+
+        // for each input driver, get its data
+        //JSONObject driver = (JSONObject) in.get(4);
+        for (Object o : in) {
             JSONObject driver = (JSONObject) o;
-            //JSONObject driver = (JSONObject) in.get(4);
             long id = (long) driver.get("input_trip_id");
             double startLat = (double) driver.get("start_latitude");
             double startLon = (double) driver.get("start_longitude");
@@ -140,7 +160,7 @@ public class Optimizer {
             tripList.add(trip);
         }
 
-        //Write JSON file
+        // Write JSON file
         try (FileWriter file = new FileWriter("output.json")) {
             file.write(tripList.toJSONString());
             file.flush();

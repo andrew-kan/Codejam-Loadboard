@@ -1,3 +1,6 @@
+/**
+ * Load class holds information about origin, destination, and times.
+ */
 public class Load {
     private final long id;
     private final double profit;
