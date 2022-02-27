@@ -1,7 +1,7 @@
 # Codejam-Loadboard
 
-For Code.jam 2022
-123Loadboard Sponsor Challenge
+For Code.jam 2022. 123Loadboard Sponsor Challenge.
+
 Devpost: https://devpost.com/software/smart-trucker
 
 ## Inspiration
