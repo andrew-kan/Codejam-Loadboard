@@ -51,8 +51,7 @@ public class Optimizer {
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
         cal.add(Calendar.HOUR, (int) hours);
-        cal.add(Calendar.MINUTE, (int) hours%1 * 60);
-        cal.add(Calendar.SECOND, (int) hours%1%60 * 60);
+        cal.add(Calendar.MINUTE, (int) Math.ceil((hours-(int)hours) * 60));
         String newTime = sdf.format(cal.getTime());
         return newTime;
     }
@@ -110,7 +109,7 @@ public class Optimizer {
 
     public static void main(String[] args) throws IOException, org.json.simple.parser.ParseException, ParseException {
         JSONParser parser = new JSONParser();
-        JSONArray in = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_input_sample.json"));
+        JSONArray in = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_input_sample_s300.json"));
         loads = (JSONArray) parser.parse(new FileReader("123Loadboard_CodeJam_2022_dataset.json"));
         JSONArray tripList = new JSONArray();
         for (Object o : in) {        // for each input driver, get its data
@@ -137,7 +136,6 @@ public class Optimizer {
             } else {
                 //System.out.println("No routes");
             }
-            System.out.println(loadIDs);
             trip.put("load_ids", loadIDs);
             tripList.add(trip);
         }
