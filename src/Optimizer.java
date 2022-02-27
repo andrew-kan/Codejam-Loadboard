@@ -126,27 +126,27 @@ public class Optimizer {
 
             JSONObject trip = new JSONObject();
             trip.put("input_trip_id", id);
-            double[] loadIDs = new double[routing.size()];
+            ArrayList<Long> loadIDs = new ArrayList<>();
             if (routing.size() >= 1) {
-                //LinkedList<Load> routing = getOptimalRoute(startLat, startLon, startTime, maxTime);
-                double totalProfit = 0;
-                for (Load l : routing) {
-                    totalProfit += l.getProfit();
-                    System.out.print(l.getID() + ", ");
+                //double totalProfit = 0;
+                for (int i=0; i<routing.size(); i++) {
+                    //totalProfit += routing.get(i).getProfit();
+                    loadIDs.add(routing.get(i).getID());
                 }
-                System.out.println("$" + totalProfit);
+                //System.out.println("$" + totalProfit);
             } else {
-                System.out.println("No routes");
+                //System.out.println("No routes");
             }
+            System.out.println(loadIDs);
             trip.put("load_ids", loadIDs);
             tripList.add(trip);
         }
-
 
         //Write JSON file
         try (FileWriter file = new FileWriter("output.json")) {
             file.write(tripList.toJSONString());
             file.flush();
+            System.out.println("Trip generation successful.");
         } catch (IOException e) {
             e.printStackTrace();
         }
