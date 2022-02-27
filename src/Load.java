@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 /**
  * Load record holds information about origin, destination, and times.
  */
@@ -15,4 +17,18 @@ public record Load(Object o, long id, double profit, double weight, double orgLa
     public String getPickupTime() {return pickupTime;}
     public String getEndTime() {return endTime;}
 
+    @Override
+    public boolean equals(Object o1) {
+        if (this == o1) return true;
+        if (o1 == null || getClass() != o1.getClass()) return false;
+        Load load = (Load) o1;
+        return id == load.id && o.equals(load.o);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(o, id);
+    }
+
+    // Would also hold routing linkedlist and total profit before this load.
 }

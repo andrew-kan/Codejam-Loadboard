@@ -139,10 +139,18 @@ public class Optimizer {
             for (Load l : loads) {
                 if (l.getWeight() > maxProf.getWeight()) {        // want the best weights at each node
                 //if (l.getProfit() > maxProf.getProfit()) {       // if want the best profits at each node
-                    maxProf = l;
+                    boolean contains = false;   // check if load already on routing
+                    for (Load r : routing) {
+                        if (r.equals(l)) {
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (contains) {
+                        maxProf = l;
+                    }
                 }
             }
-            //System.out.println(maxProf);
             routing.add(maxProf);   // add max profit load to routing
             getOptimalRoute(routing, maxProf.getDestLat(), maxProf.getDestLon(), maxProf.getEndTime(), maxTime);    // keep adding loads to routing if possible
         }
@@ -193,8 +201,8 @@ public class Optimizer {
         JSONArray tripList = new JSONArray();
 
         // For each input driver, create routing
-        for(int i=0; i<9; i++) { //(Object o : in) {
-            JSONObject driver = (JSONObject) in.get(i);//o;
+        for (Object o : in) {
+            JSONObject driver = (JSONObject) o;
             JSONObject trip = createRouting(driver);
             tripList.add(trip);
         }
