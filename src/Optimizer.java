@@ -111,11 +111,11 @@ public class Optimizer {
                 if (profit > 0) {   // profitable loads
                     // Check if truck can make pickup time and if time not too far away
                     double timeDiffPickup = findTimeDiff(startTime, pickupTime);
-                    double timeDiffEnd = findTimeDiff(pickupTime, maxTime);     // used to check pickupTime before max destination time
+                    double timeDiffEnd = findTimeDiff(pickupTime, maxTime);         // used to check pickupTime before max destination time
                     if (timeDiffPickup >= deadDist/speed && timeDiffEnd >= loadDist/speed && timeDiffPickup <= 6) {
-                        String endTime = addTime(pickupTime, loadDist/speed);    // time when reaches destination
-                        // Todo: add weighting (profit/duration)
-                        Load l = new Load(o, id, profit, orgLat, orgLon, destLat, destLon, pickupTime, endTime);
+                        String endTime = addTime(pickupTime, loadDist/speed);     // time when reaches destination
+                        double weight = profit / findTimeDiff(startTime,endTime);       // weighting = profit/timeSpent
+                        Load l = new Load(o, id, profit, weight, orgLat, orgLon, destLat, destLon, pickupTime, endTime);
                         possibleLoads.add(l);   // add to list of possible loads
                     }
                 }
@@ -125,7 +125,7 @@ public class Optimizer {
     }
 
     /**
-     * Generates optimal routing from an origin with time constraints. Uses maximum profit at each node using Greedy Algorithm and recursion.
+     * Generates optimal routing from an origin with time constraints. Uses maximum weight at each node using Greedy Algorithm and recursion.
      * @param routing Linkedlist holding routing
      * @param startLat origin latitude
      * @param startLon origin longitude
@@ -136,11 +136,12 @@ public class Optimizer {
     public static void getOptimalRoute(LinkedList<Load> routing, double startLat, double startLon, String startTime, String maxTime) throws ParseException {
         // Finds possible loads available at starting location
         ArrayList<Load> loads = findLoads(startLat, startLon, startTime, maxTime);
-        // Select maximum load available and add to routing
+        // Select max profit weight available and add to routing
         if (loads.size() > 0) {
             Load maxProf = loads.get(0);
             for (Load l : loads) {
-                if (l.getProfit() > maxProf.getProfit()) {
+                if (l.getWeight() > maxProf.getWeight()) {        // want the best weights at each node
+                //if (l.getProfit() > maxProf.getProfit()) {       // if want the best profits at each node
                     maxProf = l;
                 }
             }
@@ -178,10 +179,9 @@ public class Optimizer {
                 //totalProfit += load.getProfit();
             }
             //System.out.println("$" + totalProfit);
-        }// else {
-            //System.out.println("No routes");
-        //}
+        }
         trip.put("load_ids", loadIDs);
+        //System.out.println(loadIDs);
         return trip;    // output JSONObject with trip id and loads
     }
 
