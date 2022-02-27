@@ -112,8 +112,9 @@ public class Optimizer {
                     // Check if truck can make pickup time and if time not too far away
                     double timeDiffPickup = findTimeDiff(startTime, pickupTime);
                     double timeDiffEnd = findTimeDiff(pickupTime, maxTime);     // used to check pickupTime before max destination time
-                    if (timeDiffPickup >= deadDist/speed && timeDiffEnd >= loadDist/speed && timeDiffPickup <= 12) {
-                        String endTime = addTime(startTime, loadDist/speed);    // time when reaches destination
+                    if (timeDiffPickup >= deadDist/speed && timeDiffEnd >= loadDist/speed && timeDiffPickup <= 6) {
+                        String endTime = addTime(pickupTime, loadDist/speed);    // time when reaches destination
+                        // Todo: add weighting (profit/duration)
                         Load l = new Load(o, id, profit, orgLat, orgLon, destLat, destLon, pickupTime, endTime);
                         possibleLoads.add(l);   // add to list of possible loads
                     }
@@ -201,7 +202,7 @@ public class Optimizer {
         }
 
         // Write JSON file
-        try (FileWriter file = new FileWriter("output.json")) {
+        try (FileWriter file = new FileWriter("output_300.json")) {
             file.write(tripList.toJSONString());
             file.flush();
             System.out.println("Trip optimization successful.");
